@@ -42,16 +42,11 @@ open DiffSharp.Backend
 
 /// Record type holding configuration parameters
 type Config =
-    {Float32Backend : Backend<float32>
-     Float64Backend : Backend<float>
-     Float32Epsilon : float32
-     Float64Epsilon : float
-     Float32EpsilonRec : float32
-     Float64EpsilonRec : float
-     Float32EpsilonRec2 : float32
-     Float64EpsilonRec2 : float
-     Float32VisualizationContrast : float32
-     Float64VisualizationContrast : float
+    {floatTypeBackend : cudaBackend
+     floatTypeEpsilon : floatType
+     floatTypeEpsilonRec : floatType
+     floatTypeEpsilonRec2 : floatType
+     floatTypeVisualizationContrast : floatType
      GrayscalePalette : string[]}
 
 /// Global configuration
@@ -59,61 +54,28 @@ type GlobalConfig() =
     static let GrayscalePaletteUnicode = [|" "; "·"; "-"; "▴"; "▪"; "●"; "♦"; "■"; "█"|]
     static let GrayscalePaletteASCII = [|" "; "."; ":"; "x"; "T"; "Y"; "V"; "X"; "H"; "N"; "M"|]
     static let mutable C =
-        let eps = 0.00001
-        {Float32Backend = OpenBLAS.Float32Backend()
-         Float64Backend = OpenBLAS.Float64Backend()
-         Float32Epsilon = (float32 eps)
-         Float64Epsilon = eps
-         Float32EpsilonRec = 1.f / (float32 eps)
-         Float64EpsilonRec = 1. / eps
-         Float32EpsilonRec2 = 0.5f / (float32 eps)
-         Float64EpsilonRec2 = 0.5 / eps
-         Float32VisualizationContrast = 1.2f
-         Float64VisualizationContrast = 1.2
+        let eps = floatType 0.00001
+        {floatTypeBackend = cudaBackend()
+         floatTypeEpsilon = eps
+         floatTypeEpsilonRec = (floatType 1.0) / eps
+         floatTypeEpsilonRec2 = (floatType 0.5) / eps
+         floatTypeVisualizationContrast = floatType 1.2
          GrayscalePalette = GrayscalePaletteUnicode}
 
-    static member Float32Backend = C.Float32Backend
-    static member Float64Backend = C.Float64Backend
-    static member Float32Epsilon = C.Float32Epsilon
-    static member Float64Epsilon = C.Float64Epsilon
-    static member Float32EpsilonRec = C.Float32EpsilonRec
-    static member Float64EpsilonRec = C.Float64EpsilonRec
-    static member Float32EpsilonRec2 = C.Float32EpsilonRec2
-    static member Float64EpsilonRec2 = C.Float64EpsilonRec2
-    static member Float32VisualizationContrast = C.Float32VisualizationContrast
-    static member Float64VisualizationContrast = C.Float64VisualizationContrast
+    static member floatTypeBackend = C.floatTypeBackend
+    static member floatTypeEpsilon = C.floatTypeEpsilon
+    static member floatTypeEpsilonRec = C.floatTypeEpsilonRec
+    static member floatTypeEpsilonRec2 = C.floatTypeEpsilonRec2
+    static member floatTypeVisualizationContrast = C.floatTypeVisualizationContrast
     static member GrayscalePalette = C.GrayscalePalette
-    static member SetBackend(backend:string) =
-        match backend with
-        | "OpenBLAS" ->
-            C <- {C with
-                    Float32Backend = OpenBLAS.Float32Backend()
-                    Float64Backend = OpenBLAS.Float64Backend()}
-        | _ -> invalidArg "" "Unsupported backend. Try: OpenBLAS"
-    static member SetEpsilon(e:float32) = 
+    static member SetEpsilon(e:floatType) = 
         C <- {C with
-                Float32Epsilon = e
-                Float64Epsilon = float e
-                Float32EpsilonRec = 1.f / e
-                Float64EpsilonRec = 1. / (float e)
-                Float32EpsilonRec2 = 0.5f / e
-                Float64EpsilonRec2 = 0.5 / (float e)}
-    static member SetEpsilon(e:float) = 
+                floatTypeEpsilon = e
+                floatTypeEpsilonRec = (floatType 1.) / e
+                floatTypeEpsilonRec2 = (floatType 0.5) / e}
+    static member SetVisualizationContrast(c:floatType) =
         C <- {C with
-                Float32Epsilon = float32 e
-                Float64Epsilon = e;
-                Float32EpsilonRec = 1.f / (float32 e)
-                Float64EpsilonRec = 1. / e
-                Float32EpsilonRec2 = 0.5f / (float32 e)
-                Float64EpsilonRec2 = 0.5 / e}
-    static member SetVisualizationContrast(c:float32) =
-        C <- {C with
-                Float32VisualizationContrast = c
-                Float64VisualizationContrast = float c}
-    static member SetVisualizationContrast(c:float) =
-        C <- {C with
-                Float32VisualizationContrast = float32 c
-                Float64VisualizationContrast = c}
+                floatTypeVisualizationContrast = c}
     static member SetVisualizationPalette(palette:string) =
         match palette with
         | "ASCII" ->

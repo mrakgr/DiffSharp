@@ -42,6 +42,9 @@ module DiffSharp.Util
 
 open System.Threading.Tasks
 
+type floatType = DiffSharp.Backend.Cuda.floatType
+let floatType x = DiffSharp.Backend.Cuda.floatType x
+
 
 /// Gets the first term of a 3-tuple
 let inline fst3 (f, _, _) = f
@@ -59,8 +62,7 @@ let inline fsttrd (f, _, t) = (f, t)
 let inline sndtrd (_, s, t) = (s, t)
 
 /// Value of log 10.
-let log10ValFloat64 = log 10.
-let log10ValFloat32 = log 10.f
+let log10ValfloatType = log (floatType 10.)
 
 /// Computes a combined hash code for the objects in array `o`
 let inline hash (o:obj[]) =

@@ -10,6 +10,14 @@ DiffSharp is an [automatic differentiation](http://en.wikipedia.org/wiki/Automat
 
 Please visit the [project website](http://gbaydin.github.io/DiffSharp/) for detailed documentation and usage examples.
 
+This branch is an experimental GPU one. It does not work yet.
+
+Marko's Note [22/12/2015]: It seems that the native GC is really poor at managing GPU memory and I am getting
+out of memory errors. The front end needs to be redesigned to accomodate this or some way of adapting the GC
+to this found. I need to do some research on this. GC.Collect seems to be doing nothing.
+
+On the plus side, the backend works great.
+
 License
 -------
 Copyright (c) 2014–2015, National University of Ireland Maynooth (Atilim Gunes Baydin, Barak A. Pearlmutter)
